@@ -1,0 +1,94 @@
+Total cells: 93
+[00] MARKDOWN: # Erasmus Mundus Scholarship Prediction Project  **Life cycle of Machine learnin
+[01] CODE    : import pandas as pd import numpy as np import matplotlib.pyplot as plt import se
+[02] CODE    : df = pd.read_csv('Graduate.csv')
+[03] CODE    : df.head()
+[04] CODE    : df.describe()
+[05] MARKDOWN: ### 3. EXPLORING DATA
+[06] CODE    : # define numerical & categorical columns numeric_features = [feature for feature
+[07] CODE    : # proportion of count data on categorical columns for col in categorical_feature
+[08] MARKDOWN: ### 📊 Insights from the Data Description: 1. **Dataset Size:** We have data for 
+[09] MARKDOWN: ## Univariate Analysis  The term univariate analysis refers to the analysis of o
+[10] MARKDOWN: ### Numerical Features
+[11] CODE    : plt.figure(figsize=(15, 15)) plt.suptitle('Univariate Analysis of Numerical Feat
+[12] MARKDOWN: ### 💡 Insights from Categorical & Univariate Analysis: 1. **Internship:** The va
+[13] MARKDOWN: ### Categorical Features
+[14] CODE    : # categorical columns plt.figure(figsize=(15, 15)) plt.suptitle('Univariate Anal
+[15] MARKDOWN: ### 💡 Insights from Categorical Countplots: 1. **Internship:** The graph clearly
+[16] MARKDOWN: ### Multivariate Analysis Multivariate analysis is the analysis of more than one
+[17] CODE    : # Separating numerical features into discrete and continuous discrete_features =
+[18] MARKDOWN: ### Outlier Detection in Continuous Features We use boxplots to identify if ther
+[19] CODE    : plt.figure(figsize=(15, 10)) plt.suptitle('Outlier Detection (Continuous Feature
+[20] MARKDOWN: ### Distribution of Discrete Features We use countplots to see the frequency of 
+[21] CODE    : plt.figure(figsize=(15, 15)) plt.suptitle('Distribution of Discrete Features', f
+[22] MARKDOWN: ### 💡 Insights from Boxplots and Countplots:  **1. Continuous Features (Boxplots
+[23] MARKDOWN: ##  Check Multicollinearity in Numerical features
+[24] CODE    : df.head()
+[25] MARKDOWN: ## Check Multicollinearity for Categorical features A chi-squared test (also chi
+[26] CODE    : from scipy.stats import chi2_contingency  chi2_test = []    cat_features_for_tes
+[27] MARKDOWN: ### 💡 Insights from Multicollinearity and Chi-Square Test:  **1. Multicollineari
+[28] MARKDOWN: ## Check Multicollinearity for Categorical features  A chi-squared test (also ch
+[29] CODE    : from scipy.stats import chi2_contingency chi2_test = [] for feature in categoric
+[30] MARKDOWN: ### 💡 Chi-Square Test Insights:  When testing if categorical columns are correla
+[31] MARKDOWN: ## Checking Null Values
+[32] CODE    : df.isnull().sum()
+[33] MARKDOWN: ## continues_features
+[34] CODE    : continues_features=[feature for feature in numeric_features if len(df[feature].u
+[35] MARKDOWN: ## Boxplot 
+[36] CODE    : clr1 = ['#1E90FF', '#DC143C']  # Dynamically size the grid based on how many num
+[37] MARKDOWN: ### 💡 Insights from Numerical Features (Boxplots):  Upon visualizing the numeric
+[38] MARKDOWN:  ## 4. Visualization  ### 4.1 Visualize the Target Feature
+[39] CODE    : # Use the correct target column percentage = df['Scholarship_Awarded'].value_cou
+[40] MARKDOWN: ### 💡 Insights from Target Variable Distribution (Pie Chart):  Looking at the pi
+[41] MARKDOWN: ## 4.2 Does applicant Continent has any impact on Visa status ?
+[42] CODE    : # Group data by Country and their count of Scholarship_Awarded df.groupby('Count
+[43] MARKDOWN: ### 💡 Insights from Country vs Scholarship Award (Countplot):  Looking at the co
+[44] CODE    : plt.subplots(figsize=(14,7)) # Fixed column names to match your dataset sns.coun
+[45] CODE    : df2 = df.copy()
+[46] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[47] MARKDOWN: ## 4.3 Does applicant education has any impact on Scholarship ?
+[48] CODE    : # Group data by Internship and their count of Scholarship_Awarded df.groupby('In
+[49] CODE    : # Group data by Target_Program and their count of Scholarship_Awarded df.groupby
+[50] CODE    : plt.subplots(figsize=(14,7)) # Plotting Internship vs Scholarship Awarded sns.co
+[51] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[52] MARKDOWN: ### 💡 Insights from Internship vs Scholarship Award:  Looking at the percentage 
+[53] MARKDOWN: ## 4.4 Does applicant's previous work experience has any impact on Scholarship ?
+[54] CODE    : # 1. Create a temporary 'has_job_experience' column (Yes if > 0 months, else No)
+[55] CODE    : plt.subplots(figsize=(13,7)) # Fixed target column: Scholarship_Awarded sns.coun
+[56] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[57] MARKDOWN: ### 💡 Insights from Work Experience vs Scholarship Award:  Looking at the graphs
+[58] MARKDOWN: ## 4.5 If the Employee requires job training, does it make any impact on Scholar
+[59] CODE    : # Group data by Research experience and count Scholarship_Awarded df.groupby('Re
+[60] CODE    : plt.subplots(figsize=(13,7)) # Fixed target column and x-axis to 'Research' sns.
+[61] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[62] MARKDOWN: ### 💡 Insights from Research Experience vs Scholarship Award:  Looking at the gr
+[63] MARKDOWN: ## 4.6 Does Number of employees of employer has any impact on Scholarship status
+[64] CODE    : plt.subplots(figsize=(10, 8)) # Tweaked the size so it looks better on screen # 
+[65] MARKDOWN: ### 💡 Insights from CGPA vs Scholarship Award (Violin Plot):  A violin plot is a
+[66] MARKDOWN: ## 4.7 Wages and its impact on Sclolarship status?
+[67] CODE    : # Group data by University_Rating and count the Scholarship_Awarded df.groupby('
+[68] CODE    : plt.subplots(figsize=(14,7)) sns.countplot(x="University_Rating", hue="Scholarsh
+[69] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[70] MARKDOWN: ### 💡 Insights from University Rating vs Scholarship Award:  By analyzing the pe
+[71] MARKDOWN: ## 4.7 Does Region of employment has impact on Scholarship status ?
+[72] CODE    : plt.subplots(figsize=(14,7)) # Swapped region_of_employment for Target_Program s
+[73] CODE    : plt.figure(figsize=[14,7])  # Calculate the percentage of 'Yes' (Awarded) for ea
+[74] MARKDOWN: ### 💡 Insights from Target Program vs Scholarship Award:  By looking at the perc
+[75] MARKDOWN: ## 4.8 Does Prevailing wage has any impact on Scholarship status ?
+[76] CODE    : # Check how many were awarded for each specific GRE Score df.groupby('GRE_Score'
+[77] CODE    : plt.subplots(figsize=(14,7)) # Swapped prevailing_wage for GRE_Score sns.histplo
+[78] MARKDOWN: ### 💡 Insights from GRE Score vs Scholarship Award (Histogram):  By looking at t
+[79] MARKDOWN: ##  4.8.1 Prevailing wage based on Education
+[80] CODE    : print('Average CGPA based on University Rating') # Calculate the average CGPA fo
+[81] CODE    : plt.subplots(figsize=(14,7)) # Standard vertical boxplot: x is categorical (Rati
+[82] MARKDOWN: ### 💡 Insights from University Rating vs CGPA (Boxplot):  By looking at the boxp
+[83] MARKDOWN: ## 4.8.2 Prevailing wage based on Job experience
+[84] CODE    : print('Median GRE Score based on Job experience') display(df.groupby('has_job_ex
+[85] MARKDOWN: ### 💡 Insights from Job Experience vs GRE Score:  By looking at the median GRE s
+[86] MARKDOWN: ## 4.8.3 Prevailing wage based on Continent
+[87] CODE    : print('Average CGPA based on Country') # Calculate the average CGPA for each cou
+[88] CODE    : plt.subplots(figsize=(14,7)) # Swapped continent for Country, and wage for CGPA 
+[89] MARKDOWN: ### 💡 Insights from Country vs CGPA (Boxplot):  By looking at the boxplots and t
+[90] MARKDOWN: ## 4.9 Year of Establishment
+[91] CODE    : plt.subplots(figsize=(14,7)) # Swapped yr_of_estab for Graduation_Year.  # Added
+[92] MARKDOWN: ### 💡 Insights from Graduation Year vs Scholarship Award:  By looking at the sta
