@@ -1,0 +1,91 @@
+Total cells: 90
+[00] MARKDOWN: # Data Pre-Processing
+[01] MARKDOWN: #### Import Packages and CSV
+[02] CODE    : import pandas as pd import numpy as np import matplotlib.pyplot as plt import se
+[03] MARKDOWN: ## Data Cleaning
+[04] MARKDOWN: ### Handling Missing values
+[05] MARKDOWN: * Handling Missing values  * Handling Duplicates * Check data type * Understand 
+[06] MARKDOWN: #### Check Null Values
+[07] CODE    : ##these are the features with nan value features_with_na=[features for features 
+[08] CODE    : features_with_na
+[09] MARKDOWN: * **There are no null values in the dataset**
+[10] MARKDOWN: ### 3.2 Other Data Cleaning steps
+[11] MARKDOWN: **Handling Duplicates**
+[12] CODE    : df.duplicated().sum()
+[13] MARKDOWN: * **No Duplicates in the dataset**
+[14] MARKDOWN: **Remove case_id from the dataset as it cannot used in Model Training**
+[15] CODE    :   # But based on our EDA, we are dropping 'Country' and 'Target_Program' to prev
+[16] MARKDOWN: # Feature Engineering
+[17] MARKDOWN: ## Feature Extraction
+[18] CODE    : df.head()
+[19] CODE    : # importing date class from datetime module from datetime import date    # creat
+[20] CODE    : current_year
+[21] MARKDOWN: **Subtract current year with year of estab to get company's age**
+[22] CODE    : df['company_age'] = current_year-df['yr_of_estab']
+[23] CODE    : df.head()
+[24] CODE    : df.drop('yr_of_estab', inplace=True, axis=1)
+[25] MARKDOWN: ### Type of Features
+[26] MARKDOWN: **Numeric Features**
+[27] CODE    : num_features = [feature for feature in df.columns if df[feature].dtype != 'O'] p
+[28] MARKDOWN: **Categorical Features**
+[29] CODE    : cat_features = [feature for feature in df.columns if df[feature].dtype == 'O'] p
+[30] MARKDOWN: **Discrete features**
+[31] CODE    : discrete_features=[feature for feature in num_features if len(df[feature].unique
+[32] MARKDOWN: **Continues Features**
+[33] CODE    : continuous_features=[feature for feature in num_features if feature not in discr
+[34] MARKDOWN: ### Split X and Y
+[35] MARKDOWN: * **Split Dataframe to X and y** * **Here we set a variable X i.e, independent c
+[36] CODE    : X = df.drop('case_status', axis=1) y = df['case_status']
+[37] CODE    : y.head()
+[38] MARKDOWN: **Manual encoding target column**
+[39] CODE    : # If the target column has Denied it is encoded as 1 others as 0 y= np.where(y==
+[40] CODE    : y
+[41] MARKDOWN: ## Feature Transformation
+[42] CODE    : # distribution of data before scaling plt.figure(figsize=(12, 6)) for i, col in 
+[43] MARKDOWN: * No of employees and Copmany age column is skewed * Apply a power transform fea
+[44] MARKDOWN: **Checking Skewness**
+[45] MARKDOWN: **What is Skewness ?**  * Skewness refers to a distortion or asymmetry that devi
+[46] CODE    : # Check Skewness X[continuous_features].skew(axis=0, skipna=True)
+[47] MARKDOWN: - Positiviely Skewed : company_age, no_of_employees. - We can handle outliers an
+[48] MARKDOWN: ## Apply Power Transformer to Check if it can reduces the outliers
+[49] CODE    : from sklearn.preprocessing import PowerTransformer pt = PowerTransformer(method=
+[50] CODE    : X_copy = pd.DataFrame(X_copy, columns=transform_features)
+[51] CODE    : plt.figure(figsize=(12, 5)) for i, col in enumerate(transform_features):     plt
+[52] MARKDOWN: **Checking Skewness**
+[53] CODE    : X_copy.skew(axis=0, skipna=True)
+[54] MARKDOWN: - Here Yeo-Johnson is used and it supports both positive or negative data for tr
+[55] CODE    : for feature in cat_features:     print(feature,':', df[feature].nunique())
+[56] MARKDOWN: ## Feature Encoding and Scaling
+[57] MARKDOWN:  **One Hot Encoding for Columns which had lesser unique values and not ordinal**
+[58] MARKDOWN: **Selecting number features for preprocessing**
+[59] CODE    : num_features = list(X.select_dtypes(exclude="object").columns)
+[60] CODE    : num_features
+[61] MARKDOWN: ### **Preprocessing using Column Transformer**
+[62] CODE    : # Create Column Transformer with 3 types of transformers or_columns = ['has_job_
+[63] CODE    : X = preprocessor.fit_transform(X)
+[64] CODE    : X
+[65] MARKDOWN: # Classification
+[66] CODE    : from imblearn.combine import SMOTETomek, SMOTEENN  # Resampling the minority cla
+[67] MARKDOWN: ## Train Test Split - The train-test split procedure is used to estimate the per
+[68] CODE    : from sklearn.model_selection import  train_test_split # separate dataset into tr
+[69] CODE    : from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, Gradien
+[70] CODE    : def evaluate_clf(true, predicted):     acc = accuracy_score(true, predicted) # C
+[71] CODE    : models = {     "Random Forest": RandomForestClassifier(),     "Decision Tree": D
+[72] CODE    : # Create a function which can evaluate models and return a report  def evaluate_
+[73] MARKDOWN: ## Model Training 
+[74] CODE    : base_model_report =evaluate_models(X=X_res, y=y_res, models=models)
+[75] MARKDOWN: **Results of All Models**
+[76] CODE    : base_model_report
+[77] MARKDOWN: **Here we can use Random Forest for Hyper Parameter Tuning**
+[78] MARKDOWN: **Define the parameter distribution for Random forest**
+[79] CODE    : #Initialize few parameter for Hyperparamter tuning xgboost_params = {     'max_d
+[80] CODE    : # Models list for Hyperparameter tuning randomcv_models = [     ('XGBoost', XGBC
+[81] MARKDOWN: **Create a function for model training and report which can be used in hyperpara
+[82] CODE    : from sklearn.model_selection import RandomizedSearchCV  model_param = {} for nam
+[83] CODE    : model_param
+[84] MARKDOWN: ## Retraining the Model with best Parameters
+[85] CODE    : from sklearn.metrics import roc_auc_score,roc_curve best_models = {     "Random 
+[86] CODE    : tuned_report
+[87] CODE    : best_model = KNeighborsClassifier(**model_param['KNN']) best_model = best_model.
+[88] CODE    : from sklearn.metrics import ConfusionMatrixDisplay ConfusionMatrixDisplay.from_e
+[89] MARKDOWN: ## Best Model is K-Nearest Neighbor(KNN) with Accuracy 96.66%
